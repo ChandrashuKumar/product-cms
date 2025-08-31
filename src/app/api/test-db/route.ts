@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { initializeDatabase } from '@/lib/init-db';
-import { getDbConnection } from '@/lib/db';
+import { executeQuery } from '@/lib/db';
 
 export async function GET() {
   try {
@@ -8,11 +8,8 @@ export async function GET() {
     const initialized = await initializeDatabase();
     
     if (initialized) {
-      // Now we can use the regular connection (database exists)
-      const connection = await getDbConnection();
-      
       // Test sample query
-      const [rows] = await connection.execute(
+      const [rows] = await executeQuery(
         'SELECT product_id, product_name, status FROM Products LIMIT 2'
       );
       

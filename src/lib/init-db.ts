@@ -1,23 +1,7 @@
-import mysql from 'mysql2/promise';
+import { executeQuery } from './db';
 
 export async function initializeDatabase(): Promise<boolean> {
   try {
-    // First connect without specifying database to create it
-    const connection = await mysql.createConnection({
-      host: process.env.DB_HOST,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      port: parseInt(process.env.DB_PORT || "3306"),
-      ssl: {
-        rejectUnauthorized: true,
-      },
-    });
-    
-    // Create database if it doesn't exist
-    await connection.execute(`CREATE DATABASE IF NOT EXISTS ${process.env.DB_NAME}`);
-    await connection.execute(`USE ${process.env.DB_NAME}`);
-    
-    console.log('Database created/selected successfully');
     
     // Create Products table if it doesn't exist
     const createTableQuery = `
@@ -41,12 +25,12 @@ export async function initializeDatabase(): Promise<boolean> {
       )
     `;
     
-    await connection.execute(createTableQuery);
+    await executeQuery(createTableQuery);
     console.log('Products table created successfully');
     
     // Check if sample data exists
-    const [rows] = await connection.execute('SELECT COUNT(*) as count FROM Products');
-    const count = (rows as any)[0].count;
+    const [rows] = await executeQuery('SELECT COUNT(*) as count FROM Products');
+    const count = (rows as { count: number }[])[0].count;
     
     if (count === 0) {
       // Insert sample data
@@ -56,11 +40,9 @@ export async function initializeDatabase(): Promise<boolean> {
         ('Product B', 'Description for Product B', 'admin', 'Published')
       `;
       
-      await connection.execute(sampleDataQuery);
+      await executeQuery(sampleDataQuery);
       console.log('Sample data inserted successfully');
     }
-    
-    await connection.end();
     return true;
   } catch (error) {
     console.error('Database initialization failed:', error);

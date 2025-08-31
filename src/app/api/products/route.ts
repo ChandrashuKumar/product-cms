@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getDbConnection } from '@/lib/db';
+import { executeQuery } from '@/lib/db';
 
 export async function GET(request: Request) {
   try {
@@ -7,11 +7,9 @@ export async function GET(request: Request) {
     const status = searchParams.get('status');
     const includeDeleted = searchParams.get('includeDeleted') === 'true';
     
-    const connection = await getDbConnection();
-    
     let query = 'SELECT * FROM Products';
     const conditions = [];
-    const params: any[] = [];
+    const params: unknown[] = [];
     
     // Filter by status if provided
     if (status && ['Draft', 'Published', 'Archived'].includes(status)) {
@@ -30,7 +28,7 @@ export async function GET(request: Request) {
     
     query += ' ORDER BY created_at DESC';
     
-    const [rows] = await connection.execute(query, params);
+    const [rows] = await executeQuery(query, params);
     
     return NextResponse.json({
       success: true,
@@ -66,23 +64,21 @@ export async function POST(request: Request) {
       }, { status: 400 });
     }
     
-    const connection = await getDbConnection();
-    
-    const [result] = await connection.execute(
+    const [result] = await executeQuery(
       'INSERT INTO Products (product_name, product_desc, status, created_by) VALUES (?, ?, ?, ?)',
       [product_name, product_desc, status, created_by]
     );
     
     // Get the created product
-    const insertId = (result as any).insertId;
-    const [rows] = await connection.execute(
+    const insertId = (result as { insertId: number }).insertId;
+    const [rows] = await executeQuery(
       'SELECT * FROM Products WHERE product_id = ?',
       [insertId]
     );
     
     return NextResponse.json({
       success: true,
-      data: (rows as any)[0],
+      data: (rows as Record<string, unknown>[])[0],
       message: 'Product created successfully'
     }, { status: 201 });
     

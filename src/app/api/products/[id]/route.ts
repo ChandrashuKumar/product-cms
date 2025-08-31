@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getDbConnection } from '@/lib/db';
+import { executeQuery } from '@/lib/db';
 
 export async function GET(
   request: Request,
@@ -16,14 +16,13 @@ export async function GET(
       }, { status: 400 });
     }
     
-    const connection = await getDbConnection();
     
-    const [rows] = await connection.execute(
+    const [rows] = await executeQuery(
       'SELECT * FROM Products WHERE product_id = ? AND is_deleted = FALSE',
       [productId]
     );
     
-    const products = rows as any[];
+    const products = rows as Record<string, unknown>[];
     
     if (products.length === 0) {
       return NextResponse.json({
@@ -79,15 +78,14 @@ export async function PUT(
       }, { status: 400 });
     }
     
-    const connection = await getDbConnection();
     
     // Check if product exists and is not deleted
-    const [existingRows] = await connection.execute(
+    const [existingRows] = await executeQuery(
       'SELECT * FROM Products WHERE product_id = ? AND is_deleted = FALSE',
       [productId]
     );
     
-    if ((existingRows as any[]).length === 0) {
+    if ((existingRows as Record<string, unknown>[]).length === 0) {
       return NextResponse.json({
         success: false,
         error: 'Product not found'
@@ -120,17 +118,17 @@ export async function PUT(
     
     const updateQuery = `UPDATE Products SET ${updateFields.join(', ')} WHERE product_id = ?`;
     
-    await connection.execute(updateQuery, params);
+    await executeQuery(updateQuery, params);
     
     // Get updated product
-    const [updatedRows] = await connection.execute(
+    const [updatedRows] = await executeQuery(
       'SELECT * FROM Products WHERE product_id = ?',
       [productId]
     );
     
     return NextResponse.json({
       success: true,
-      data: (updatedRows as any[])[0],
+      data: (updatedRows as Record<string, unknown>[])[0],
       message: 'Product updated successfully'
     });
     
@@ -168,15 +166,14 @@ export async function DELETE(
       }, { status: 400 });
     }
     
-    const connection = await getDbConnection();
     
     // Check if product exists and is not already deleted
-    const [existingRows] = await connection.execute(
+    const [existingRows] = await executeQuery(
       'SELECT * FROM Products WHERE product_id = ? AND is_deleted = FALSE',
       [productId]
     );
     
-    if ((existingRows as any[]).length === 0) {
+    if ((existingRows as Record<string, unknown>[]).length === 0) {
       return NextResponse.json({
         success: false,
         error: 'Product not found'
@@ -184,7 +181,7 @@ export async function DELETE(
     }
     
     // Soft delete
-    await connection.execute(
+    await executeQuery(
       'UPDATE Products SET is_deleted = TRUE, updated_by = ? WHERE product_id = ?',
       [updated_by, productId]
     );

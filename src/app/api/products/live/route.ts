@@ -1,12 +1,10 @@
 import { NextResponse } from 'next/server';
-import { getDbConnection } from '@/lib/db';
+import { executeQuery } from '@/lib/db';
 
 export async function GET() {
   try {
-    const connection = await getDbConnection();
-    
     // Get only published products that are not deleted
-    const [rows] = await connection.execute(
+    const [rows] = await executeQuery(
       'SELECT product_id, product_name, product_desc, created_at, updated_at FROM Products WHERE status = ? AND is_deleted = FALSE ORDER BY created_at DESC',
       ['Published']
     );
