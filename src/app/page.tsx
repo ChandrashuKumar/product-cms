@@ -69,25 +69,25 @@ export default function ProductsManagement() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="bg-white rounded-lg shadow-sm border p-6 mb-6">
-          <div className="flex justify-between items-center">
+        <div className="bg-white rounded-lg shadow-sm border p-4 sm:p-6 mb-6">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-4 sm:space-y-0">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Products Management</h1>
-              <p className="text-gray-600 mt-2">Manage your product catalog and publishing status</p>
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Products Management</h1>
+              <p className="text-gray-600 mt-1 sm:mt-2">Manage your product catalog and publishing status</p>
             </div>
-            <div className="flex space-x-3">
+            <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
               <Link
                 href="/live"
-                className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md font-medium transition-colors flex items-center"
+                className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md font-medium transition-colors flex items-center justify-center"
               >
                 <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                 </svg>
-                View Live Site
+                <span className="sm:inline">View Live Site</span>
               </Link>
               <button
                 onClick={() => setShowAddForm(true)}
@@ -101,7 +101,7 @@ export default function ProductsManagement() {
 
         {/* Products Table */}
         <div className="bg-white rounded-lg shadow-sm border overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-200">
+          <div className="px-4 sm:px-6 py-4 border-b border-gray-200">
             <h2 className="text-lg font-semibold text-gray-900">All Products</h2>
           </div>
           
@@ -122,7 +122,9 @@ export default function ProductsManagement() {
               </button>
             </div>
           ) : (
-            <div className="overflow-x-auto">
+            <div>
+            {/* Desktop Table View */}
+            <div className="hidden sm:block overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-gray-50">
                   <tr>
@@ -170,6 +172,45 @@ export default function ProductsManagement() {
                   ))}
                 </tbody>
               </table>
+            </div>
+            
+            {/* Mobile Card View */}
+            <div className="sm:hidden">
+              {products.map((product) => (
+                <div key={product.product_id} className="p-4 border-b border-gray-200 last:border-b-0">
+                  <div className="flex justify-between items-start mb-3">
+                    <div className="flex-1">
+                      <h3 className="text-sm font-medium text-gray-900 mb-1">{product.product_name}</h3>
+                      <p className="text-sm text-gray-500 mb-2">{product.product_desc}</p>
+                    </div>
+                    <span className={getStatusBadge(product.status)}>{product.status}</span>
+                  </div>
+                  
+                  <div className="text-xs text-gray-500 mb-3">
+                    <div>Created by: {product.created_by}</div>
+                    <div>
+                      Updated: {new Date(product.updated_at).toLocaleDateString()}
+                      {product.updated_by && ` by ${product.updated_by}`}
+                    </div>
+                  </div>
+                  
+                  <div className="flex space-x-3">
+                    <button
+                      onClick={() => setEditingProduct(product)}
+                      className="flex-1 bg-blue-50 text-blue-600 py-2 px-3 rounded-md text-sm font-medium hover:bg-blue-100 transition-colors"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => setDeleteConfirm(product)}
+                      className="flex-1 bg-red-50 text-red-600 py-2 px-3 rounded-md text-sm font-medium hover:bg-red-100 transition-colors"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
             </div>
           )}
         </div>

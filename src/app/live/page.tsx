@@ -74,15 +74,15 @@ export default function LiveProductsPage() {
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex justify-between items-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-2 sm:space-y-0">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Our Products</h1>
-              <p className="text-gray-600">Discover our latest published products</p>
+              <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Our Products</h1>
+              <p className="text-gray-600 text-sm sm:text-base">Discover our latest published products</p>
             </div>
             <Link
               href="/"
-              className="text-blue-600 hover:text-blue-800 font-medium"
+              className="text-blue-600 hover:text-blue-800 font-medium text-sm sm:text-base self-start sm:self-auto"
             >
               ← Back to Admin
             </Link>
@@ -91,7 +91,7 @@ export default function LiveProductsPage() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-6 py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         {products.length === 0 ? (
           <div className="text-center py-16">
             <div className="text-gray-400 mb-6">
@@ -122,23 +122,23 @@ export default function LiveProductsPage() {
               </p>
             </div>
 
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {products.map((product) => (
                 <div
                   key={product.product_id}
                   className="bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow duration-200"
                 >
-                  <div className="p-6">
+                  <div className="p-4 sm:p-6">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                        <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">
                           {product.product_name}
                         </h3>
                         <p className="text-gray-600 text-sm leading-relaxed mb-4">
                           {product.product_desc || 'No description available.'}
                         </p>
                       </div>
-                      <div className="ml-4">
+                      <div className="ml-4 flex-shrink-0">
                         <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                           Live
                         </span>
@@ -146,7 +146,7 @@ export default function LiveProductsPage() {
                     </div>
                     
                     <div className="mt-4 pt-4 border-t border-gray-100">
-                      <div className="flex justify-between items-center text-xs text-gray-500">
+                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center text-xs text-gray-500 space-y-1 sm:space-y-0">
                         <span>
                           Published {new Date(product.created_at).toLocaleDateString()}
                         </span>
@@ -164,8 +164,8 @@ export default function LiveProductsPage() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-white border-t mt-16">
-        <div className="max-w-7xl mx-auto px-6 py-8">
+      <footer className="bg-white border-t mt-12 sm:mt-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
           <div className="text-center text-gray-500 text-sm">
             <p>Products Management System - Live View</p>
             <p className="mt-1">
