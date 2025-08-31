@@ -1,36 +1,92 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Products Management CMS
 
-## Getting Started
+A full-stack content management system for product lifecycle management built with Next.js and MariaDB.
 
-First, run the development server:
+## Live Demo
+🚀 **[View Live Application](https://product-cms-kohl.vercel.app/)**
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Features
+- ✅ **Add/Edit/Delete Products** (soft delete for audit trail)
+- ✅ **Status Management** (Draft/Published/Archived)
+- ✅ **Live Publishing** (admin changes appear immediately on public site)
+- ✅ **Audit Trail** (tracks who created/updated products and when)
+- ✅ **Public View** (shows only published, non-deleted products)
+- ✅ **Responsive Design** (works on desktop and mobile)
+
+## Tech Stack
+- **Frontend**: Next.js 13+ (App Router), TypeScript, Tailwind CSS
+- **Backend**: Next.js API Routes
+- **Database**: MariaDB (SkySQL Cloud)
+- **Deployment**: Vercel
+
+## Project Structure
+```
+products-cms/
+├── app/
+│   ├── api/products/          # CRUD API endpoints
+│   ├── products/              # Admin product management
+│   ├── live/                  # Public product view
+│   └── page.tsx              # Dashboard
+├── lib/
+│   ├── db.ts                 # Database connection
+│   └── types.ts              # TypeScript interfaces
+├── components/               # Reusable UI components
+└── README.md
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## API Endpoints
+- `GET /api/products` - List all products
+- `POST /api/products` - Create new product
+- `PUT /api/products/[id]` - Update product
+- `DELETE /api/products/[id]` - Soft delete product
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Database Schema
+```sql
+CREATE TABLE Products (
+    product_id INT AUTO_INCREMENT PRIMARY KEY,
+    product_name VARCHAR(100) NOT NULL,
+    product_desc TEXT,
+    status ENUM('Draft', 'Published', 'Archived') DEFAULT 'Draft',
+    created_by VARCHAR(50) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_by VARCHAR(50),
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    is_deleted BOOLEAN DEFAULT FALSE
+);
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Local Development Setup
+1. **Clone the repository**
+   ```bash
+   git clone [your-repo-url]
+   cd products-cms
+   ```
 
-## Learn More
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+3. **Configure environment variables**
+   Create `.env.local`:
+   ```
+   DB_HOST=your_database_host
+   DB_USER=your_database_user
+   DB_PASSWORD=your_database_password
+   DB_NAME=product_cms
+   DB_PORT=4047
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+4. **Run development server**
+   ```bash
+   npm run dev
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+5. **Open** [http://localhost:3000](http://localhost:3000)
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Key Functionality Demonstrated
+- **Product Lifecycle Management**: Create → Draft → Published → Live
+- **Soft Delete**: Products are never physically deleted, only marked as deleted
+- **Real-time Updates**: Published products appear immediately on public site
+- **Audit Trail**: Full tracking of who created/modified products and when
+- **Status Filtering**: View products by status (Draft/Published/Archived)
